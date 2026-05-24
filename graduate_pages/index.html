@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#1C1815">
+<meta name="robots" content="noindex,nofollow">
+<title>Class of 2026</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#1C1815;--bg2:#2A2420;
+--paper:#fdf8f0;--paper2:#fdfaf5;
+--red:#E63946;--blue:#457B9D;--navy:#1A4780;
+--gold:#D4AF37;--gold-d:rgba(212,175,55,.3);--gold-m:rgba(212,175,55,.7);
+--tb:#6B4226;--td:#2C2420;--tm:#8B7D6B;--tc:rgba(139,125,107,.6);
+--sp:0 4px 20px rgba(0,0,0,.25),0 1px 3px rgba(0,0,0,.15);
+--sph:0 2px 12px rgba(0,0,0,.2),0 1px 3px rgba(0,0,0,.1);
+}
+html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:var(--bg);
+font-family:Georgia,'Source Han Serif SC','Noto Serif SC',serif;
+-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:fullscreen{background:var(--bg)}
+:fullscreen html,:fullscreen body{width:100%;height:100dvh}
+.scene{position:relative;width:100%;height:100%;height:100dvh;overflow:visible}
+.vignette{position:fixed;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,transparent 40%,rgba(12,10,8,.5) 100%);pointer-events:none;z-index:50}
+
+/* Gate */
+.gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+background:var(--bg);transition:opacity .5s,visibility .5s}
+.gate.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.gate-inner{text-align:center;padding:40px;max-width:420px;width:90%}
+.gate-inner h1{font-size:22px;font-weight:400;letter-spacing:.1em;margin-bottom:32px;color:#E8D5B7}
+.gate-inner input{width:100%;padding:14px 20px;border:1px solid rgba(212,197,169,.3);
+border-radius:6px;background:rgba(255,255,255,.06);color:#E8D5B7;font-size:16px;
+font-family:'Courier New',monospace;letter-spacing:.05em;outline:none;transition:border-color .3s}
+.gate-inner input::placeholder{color:rgba(212,197,169,.35)}
+.gate-inner input:focus{border-color:rgba(232,213,183,.6)}
+.gate-inner button{margin-top:16px;width:100%;padding:14px;border:none;border-radius:6px;
+background:#3D3427;color:#E8D5B7;font-size:14px;letter-spacing:.15em;cursor:pointer;transition:background .3s}
+.gate-inner button:hover{background:#4A3F32}
+.gate-inner button:active{background:#2F281D}
+.gate .err{margin-top:16px;font-size:13px;color:#A0503C;opacity:0;transition:opacity .3s;letter-spacing:.05em}
+.gate .err.show{opacity:1}
+.gate .hint{margin-top:40px;font-size:11px;color:rgba(212,197,169,.3);letter-spacing:.1em}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}
+60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+/* Particles */
+.star{position:absolute;border-radius:50%;pointer-events:none;opacity:0;
+animation:twinkle var(--dur) var(--del) ease-in-out infinite}
+.dust{position:absolute;border-radius:50%;pointer-events:none;opacity:0;
+animation:float-dust var(--dur) var(--del) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--mo);transform:scale(1.2)}}
+@keyframes float-dust{0%{opacity:0;transform:translate(0,0) scale(.8)}
+20%{opacity:var(--mo)}50%{opacity:var(--mo);transform:translate(var(--dx),var(--dy)) scale(1)}
+80%{opacity:var(--mo)}100%{opacity:0;transform:translate(calc(var(--dx)*1.5),calc(var(--dy)*.5)) scale(.6)}}
+
+/* Airmail stripe */
+.airmail{background:repeating-linear-gradient(-45deg,var(--red) 0,var(--red) 12px,#fff 12px,#fff 24px,
+var(--blue) 24px,var(--blue) 36px,#fff 36px,#fff 49px)}
+
+/* Envelope */
+#envelope-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;
+pointer-events:auto;transition:opacity .3s}
+#envelope-wrap.disabled{pointer-events:none}
+#envelope-anim{width:min(88vw,420px);aspect-ratio:4/3;transition:transform 1.2s cubic-bezier(.4,0,.2,1) .8s,opacity 1.2s .8s}
+#envelope-anim.opened{transform:translate(-2vw,35dvh) rotate(-3deg);opacity:.85}
+#envelope-anim.entering{animation:env-enter .5s ease-out,env-float 4s ease-in-out .5s infinite}
+@keyframes env-enter{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+@keyframes env-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+#envelope{width:100%;height:100%;position:relative;cursor:pointer}
+.env-flap{position:absolute;right:-3px;top:0;bottom:0;width:24px;background:var(--paper2);
+transform-origin:left center;z-index:20;backface-visibility:hidden;box-shadow:-2px 0 8px rgba(0,0,0,.15);
+transition:transform .8s cubic-bezier(.4,0,.2,1)}
+.env-flap.idle{animation:flap-wiggle 3s ease-in-out infinite}
+.env-flap.open{transform:rotateY(-180deg)}
+@keyframes flap-wiggle{0%,100%{transform:rotateY(0)}50%{transform:rotateY(-8deg)}}
+.env-flap-inner{width:100%;height:100%;
+background:repeating-linear-gradient(0deg,#e8e0d4 0,#e8e0d4 2px,transparent 2px,transparent 8px);
+display:flex;align-items:center;justify-content:center}
+.env-flap-bar{width:12px;height:3px;background:var(--red);border-radius:1.5px}
+.tap-hint{position:absolute;bottom:-36px;left:50%;transform:translateX(-50%);color:var(--gold);
+font-size:12px;letter-spacing:.2em;white-space:nowrap;cursor:pointer;
+animation:pulse 2s ease-in-out infinite;transition:opacity .3s}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+
+/* Stamp */
+.stamp{position:relative;background:var(--paper2);filter:drop-shadow(2px 2px 5px rgba(0,0,0,.1));
+display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px dashed #ccc}
+.stamp-sm{width:60px;height:72px;padding:4px;transform:rotate(-5deg)}
+.stamp-lg{width:clamp(50px,16vw,70px);height:clamp(60px,19vw,85px);padding:5px;transform:rotate(-5deg)}
+.stamp-border{border:1px solid var(--blue);width:100%;height:100%;display:flex;flex-direction:column;
+align-items:center;justify-content:space-around;padding:4px}
+.stamp-lg .stamp-border{padding:5px}
+.stamp-icon{fill:var(--blue);opacity:.8}
+.stamp-sm .stamp-icon{width:30px;height:30px}
+.stamp-lg .stamp-icon{width:35px;height:35px}
+.stamp-text-b{font-size:7px;color:var(--blue);font-weight:700;text-align:center}
+.stamp-lg .stamp-text-b{font-size:8px}
+.stamp-text-r{font-size:11px;color:var(--red);font-family:serif;font-weight:900;text-align:center}
+.stamp-lg .stamp-text-r{font-size:12px}
+.stamp-postmark{position:absolute;top:-6px;right:-10px;width:36px;height:36px;
+border:1.5px solid rgba(26,71,128,.4);border-radius:50%;display:flex;align-items:center;
+justify-content:center;font-size:5px;color:rgba(26,71,128,.4);transform:rotate(15deg);pointer-events:none;text-align:center}
+.stamp-lg .stamp-postmark{top:-10px;right:-15px;width:50px;height:50px;font-size:6px}
+
+/* AVION Badge */
+.badge{width:fit-content;border:2px solid var(--navy);text-align:center;font-family:sans-serif;
+font-weight:900;line-height:1.2;text-transform:uppercase}
+.badge-sm .badge-t{background:var(--navy);color:#fff;padding:0 8px;font-size:10px}
+.badge-sm .badge-m{color:var(--red);font-size:14px;padding:0 4px}
+.badge-sm .badge-b{background:var(--navy);color:#fff;padding:0 8px;font-size:10px}
+.badge-lg .badge-t{background:var(--navy);color:#fff;padding:0 clamp(4px,1.5vw,8px);font-size:clamp(7px,2.2vw,10px)}
+.badge-lg .badge-m{color:var(--red);font-size:clamp(10px,3vw,14px);padding:0 clamp(2px,.8vw,4px)}
+.badge-lg .badge-b{background:var(--navy);color:#fff;padding:0 clamp(4px,1.5vw,8px);font-size:clamp(7px,2.2vw,10px)}
+
+/* Content area */
+#content{position:absolute;inset:0;overflow:visible;transform:translateY(-50px);z-index:30;opacity:0;
+transition:opacity .3s;pointer-events:none}
+#content.visible{opacity:1;pointer-events:auto}
+
+/* Photo */
+.photo{position:absolute;background:#fff;border-radius:2px;box-shadow:var(--sph);z-index:1;
+padding:clamp(5px,1.8vw,8px);padding-bottom:clamp(12px,4vw,20px);
+opacity:0;transform:scale(.3) translate(var(--fx,0),var(--fy,0)) rotate(calc(var(--rot,0deg) + 20deg));
+transition:all .7s cubic-bezier(.25,.1,.25,1)}
+.photo.show{opacity:1;transform:scale(1) translate(0,0) rotate(var(--rot,0deg))}
+.photo-inner{width:100%;background:#c4b5a0;border-radius:1px;display:flex;align-items:center;
+justify-content:center;overflow:hidden}
+.photo-inner img{width:100%;height:100%;object-fit:cover}
+.photo-caption{margin-top:4px;font-size:clamp(8px,2.2vw,11px);color:var(--tc);
+font-family:Georgia,cursive;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Letter */
+#letter{position:absolute;top:max(29dvh,190px);left:23%;width:80%;background:var(--paper);
+border-radius:8px;box-shadow:var(--sp);padding:clamp(16px,5vw,24px);
+font-size:clamp(13px,3.8vw,16px);line-height:1.8;color:var(--td);z-index:7;
+opacity:0;transform:translateY(15dvh) scale(.9);transition:all .9s cubic-bezier(.25,.1,.25,1) .8s}
+#letter.show{opacity:1;transform:translateY(0) scale(1) rotate(3.5deg)}
+#letter .blur-in{opacity:0;filter:blur(12px);transform:translateY(8px);
+transition:all .6s cubic-bezier(.25,.1,.25,1)}
+#letter .blur-in.show{opacity:1;filter:blur(0);transform:translateY(0)}
+
+/* Letter header ornament */
+.ornament-wrap{display:flex;align-items:center;justify-content:center;margin-top:-9px;
+gap:clamp(8px,3vw,16px);margin-bottom:clamp(8px,2.5vw,13px);color:var(--tb);opacity:.8}
+.ornament-line{flex:1;height:1px;background:currentColor;opacity:.3}
+
+/* Letter greeting */
+.greeting{font-size:clamp(14px,4.2vw,18px);font-weight:600;color:var(--tb);
+letter-spacing:.05em;margin-bottom:clamp(10px,2.5vw,16px)}
+
+/* Letter signoff */
+.signoff{text-align:right;padding-top:clamp(10px,3vw,16px)}
+.signoff-name{font-style:italic;color:var(--tm)}
+.signoff-line{margin-top:8px;display:flex;align-items:center;justify-content:flex-end;gap:12px}
+.signoff-hr{height:1px;width:40px;background:var(--gold-d)}
+.signoff-date{font-size:clamp(8px,2.2vw,10px);letter-spacing:.3em;color:var(--gold-m);text-transform:uppercase}
+
+/* Markdown */
+.md-body h1,.md-body h2,.md-body h3{color:var(--tb);margin:.8em 0 .4em;font-weight:600}
+.md-body h1{font-size:1.3em}.md-body h2{font-size:1.15em}.md-body h3{font-size:1.05em}
+.md-body p{margin:.3em 0}.md-body strong{color:var(--tb);font-weight:700}
+.md-body em{font-style:italic;color:var(--tm)}.md-body a{color:var(--blue);text-decoration:underline}
+.md-body blockquote{border-left:3px solid var(--gold-d);padding-left:12px;margin:.5em 0;color:var(--tm);font-style:italic}
+.md-body ul,.md-body ol{padding-left:1.5em;margin:.3em 0}.md-body li{margin:.2em 0}
+.md-body hr{border:none;height:1px;background:var(--gold-d);margin:1em 0}
+.md-body code{background:rgba(107,66,38,.08);padding:1px 4px;border-radius:3px;font-size:.9em}
+.md-body img{max-width:100%;border-radius:4px}
+
+/* Music button */
+#music-btn{position:absolute;bottom:clamp(8px,2vw,14px);left:clamp(8px,2vw,14px);width:32px;height:32px;
+border-radius:50%;background:rgba(255,255,255,.1);backdrop-filter:blur(4px);display:none;
+align-items:center;justify-content:center;cursor:pointer;z-index:20;transition:background .3s;
+border:1px solid rgba(212,175,55,.3)}
+#music-btn.visible{display:flex}
+#music-btn.playing{background:rgba(212,175,55,.2)}
+.music-pulse{position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(212,175,55,.3);
+animation:music-pulse 2s ease-out infinite}
+@keyframes music-pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+
+/* Vinyl */
+#vinyl{position:fixed;bottom:-30px;right:-30px;width:110px;height:110px;border-radius:50%;cursor:pointer;
+z-index:15;background:repeating-radial-gradient(circle at center,#1a1a1a 0,#1a1a1a 1px,#222 1px,#222 2px,
+#1a1a1a 2px,#1a1a1a 3px,#252525 3px,#252525 4px),
+radial-gradient(circle at center,transparent 35%,rgba(80,70,60,.3) 36%,transparent 37%,
+rgba(60,55,50,.2) 60%,transparent 61%,rgba(50,45,40,.15) 85%,transparent 86%),
+radial-gradient(circle at center,#2a2420,#1a1815);
+box-shadow:0 0 18px rgba(0,0,0,.5),inset 0 0 25px rgba(0,0,0,.3);animation:vinyl-spin 4s linear infinite;
+animation-play-state:paused}
+#vinyl.playing{animation-play-state:running}
+@keyframes vinyl-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.vinyl-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:24px;height:24px;
+border-radius:50%;background:radial-gradient(circle,#3a3228,#2a2420 70%,#1e1a16);
+border:1px solid rgba(212,175,55,.25);display:flex;align-items:center;justify-content:center;
+box-shadow:inset 0 0 10px rgba(0,0,0,.5)}
+.vinyl-hole{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:3px;height:3px;
+border-radius:50%;background:#1a1815;border:1px solid rgba(212,175,55,.2)}
+.vinyl-year{font-family:serif;font-size:6px;color:rgba(212,175,55,.6);letter-spacing:.15em;font-weight:600}
+.vinyl-shine{position:absolute;inset:0;border-radius:50%;
+background:linear-gradient(135deg,rgba(255,255,255,.06),transparent 50%,rgba(255,255,255,.02));pointer-events:none}
+
+/* Envelope decoration (reading phase) */
+#env-deco{position:absolute;bottom:-7dvh;left:6%;height:31dvh;aspect-ratio:4/3;z-index:5;
+opacity:0;transform:rotate(-3deg);transition:opacity 1s 1s,transform 1s 1s;pointer-events:none}
+#env-deco.show{opacity:.9}
+.deco-lines{align-self:flex-end;width:55%;margin-bottom:clamp(12px,4vw,20px);display:flex;flex-direction:column;gap:clamp(10px,3vw,15px)}
+.deco-line{border-bottom:1px solid #666;height:20px;position:relative}
+.deco-line span{position:absolute;right:0;bottom:2px;font-size:8px;color:#666;transform:scale(.9)}
+
+/* Recipient area */
+.recipient{position:absolute;top:50%;right:32px;transform:translateY(-50%);display:flex;
+flex-direction:column;align-items:flex-end;gap:16px;pointer-events:none}
+.recipient-name{font-family:'Ma Shan Zheng',cursive;font-size:22px;color:#8B7355;opacity:.85;line-height:1.4;white-space:nowrap}
+.recipient-class{font-family:'Dancing Script',cursive;font-size:14px;color:#8B7355;opacity:.5;letter-spacing:.05em}
+</style>
+</head>
+<body>
+
+<!-- Gate -->
+<div class="gate" id="gate">
+  <div class="gate-inner">
+    <h1>This letter is private.</h1>
+    <input type="text" id="token-input" placeholder="Enter your access code" autocomplete="off" spellcheck="false">
+    <button id="gate-btn">OPEN</button>
+    <div class="err" id="err-msg">Invalid code. Please try again.</div>
+    <div class="hint">Class of 2026</div>
+  </div>
+</div>
+
+<!-- Scene -->
+<div class="vignette"></div>
+<div class="scene" id="scene">
+  <!-- Particles container -->
+  <div id="particles" style="position:absolute;inset:0;pointer-events:none;z-index:2"></div>
+
+  <!-- Vinyl player -->
+  <div id="vinyl" role="button" aria-label="Toggle music">
+    <div class="vinyl-label"><div class="vinyl-hole"></div><span class="vinyl-year">2026</span></div>
+    <div class="vinyl-shine"></div>
+  </div>
+
+  <!-- Envelope -->
+  <div id="envelope-wrap">
+    <div id="envelope-anim" class="entering">
+      <div id="envelope" role="button" aria-label="Open envelope">
+        <div class="airmail" style="position:absolute;inset:0;border-radius:4px;overflow:hidden;
+box-shadow:0 8px 32px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.2)">
+          <div style="position:absolute;inset:6px;background:var(--paper2);display:flex;flex-direction:column;
+justify-content:space-between;padding:clamp(12px,3.5vw,22px)">
+            <!-- AVION badge -->
+            <div class="badge badge-sm">
+              <div class="badge-t">AVIONOM</div><div class="badge-m">AIR MAIL</div><div class="badge-b">PAR AVION</div>
+            </div>
+            <!-- Recipient -->
+            <div class="recipient">
+              <div class="recipient-name" id="env-line1"></div>
+              <div class="recipient-class" id="env-line2"></div>
+            </div>
+            <!-- Stamp -->
+            <div style="position:absolute;bottom:clamp(12px,3.5vw,22px);left:clamp(12px,3.5vw,22px)">
+              <div class="stamp stamp-sm">
+                <div class="stamp-border">
+                  <svg class="stamp-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-4L12 17l-7-3.82z"/></svg>
+                  <div><div class="stamp-text-b">GRADUATION</div><div class="stamp-text-r">2026</div></div>
+                </div>
+                <div class="stamp-postmark"><span style="transform:scale(.7)">CLASS OF<br>2026</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Flap -->
+        <div class="env-flap" id="env-flap">
+          <div class="env-flap-inner"><div class="env-flap-bar"></div></div>
+        </div>
+      </div>
+      <div class="tap-hint" id="tap-hint">TAP TO OPEN</div>
+    </div>
+  </div>
+
+  <!-- Reading content (hidden initially) -->
+  <div id="content">
+    <!-- Photos -->
+    <div class="photo" id="photo0"><div class="photo-inner"><span class="photo-placeholder"></span></div><div class="photo-caption"></div></div>
+    <div class="photo" id="photo1"><div class="photo-inner"><span class="photo-placeholder"></span></div><div class="photo-caption"></div></div>
+    <div class="photo" id="photo2"><div class="photo-inner"><span class="photo-placeholder"></span></div><div class="photo-caption"></div></div>
+    <!-- Letter -->
+    <div id="letter"></div>
+    <!-- Envelope decoration -->
+    <div id="env-deco">
+      <div class="airmail" style="position:absolute;inset:0;border-radius:2px;overflow:hidden">
+        <div style="position:absolute;inset:clamp(3px,1.2vw,6px);background:var(--paper2);display:flex;
+flex-direction:column;justify-content:space-between;padding:clamp(12px,4vw,20px)">
+          <div class="badge badge-lg">
+            <div class="badge-t">AVIONOM</div><div class="badge-m">AIR MAIL</div><div class="badge-b">PAR AVION</div>
+          </div>
+          <div class="deco-lines">
+            <div class="deco-line"><span>Primalac / Recipient</span></div>
+            <div class="deco-line"></div>
+            <div class="deco-line"><span>Poštanski kod, mesto / Postal code, city</span></div>
+            <div class="deco-line"><span>Država / Country</span></div>
+            <div class="stamp stamp-lg">
+              <div class="stamp-border">
+                <svg class="stamp-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-4L12 17l-7-3.82z"/></svg>
+                <div><div class="stamp-text-b">GRADUATION</div><div class="stamp-text-r">2026</div></div>
+              </div>
+              <div class="stamp-postmark"><span style="transform:scale(.7)">CLASS OF<br>2026</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ── SVG Paths ── */
+var SVG_PLAY='<svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(212,175,55,.8)"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55C7.79 13 6 14.79 6 17s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>';
+var SVG_PAUSE='<svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(212,175,55,.8)"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
+var SVG_ORNAMENT='<svg width="24px" height="24px" viewBox="0 0 512 512" style="fill:currentColor"><path d="M511.976,213.063l-45.863-9.749l31.374-34.845c-25.373-36.736-80.219-53.454-137.114-40.543c-5.302-58.1-38.15-105.096-80.929-117.874L256,50.659l-23.444-40.606c-42.779,12.779-75.626,59.775-80.929,117.874c-56.894-12.911-111.741,3.807-137.113,40.543l31.374,34.844l-45.864,9.749c-1.066,44.634,33.479,90.396,87.097,113.393c-29.86,50.12-30.91,107.448-3.812,142.931l42.834-19.071l-4.901,46.632c42.12,14.806,96.318-3.907,134.758-47.794c38.44,43.887,92.638,62.6,134.758,47.794l-4.901-46.632l42.835,19.072c27.097-35.483,26.048-92.811-3.812-142.932C478.497,303.46,513.042,257.697,511.976,213.063z M315.377,296.385c3.526-2.358,7.678-3.63,11.998-3.63c3.762,0,7.479,.998,10.752,2.889c4.986,2.876,8.552,7.525,10.043,13.085c1.49,5.56,.725,11.369-2.156,16.353c-3.838,6.65-10.996,10.781-18.68,10.781c-3.765,0-7.484-1-10.758-2.89c-7.126-4.116-11.228-12.025-10.724-20.072l-40.32-23.278v46.552c7.222,3.587,12.021,11.096,12.021,19.327c0,11.884-9.669,21.551-21.553,21.551c-11.884,0-21.553-9.667-21.553-21.551c0-8.231,4.799-15.74,12.021-19.327v-46.552l-40.319,23.278c.504,8.047-3.598,15.956-10.724,20.072c-3.275,1.889-6.994,2.89-10.758,2.89c-7.684,0-14.842-4.132-18.682-10.781c-2.878-4.984-3.644-10.792-2.154-16.353c1.49-5.56,5.057-10.209,10.043-13.087c3.272-1.889,6.989-2.887,10.752-2.887c4.321,0,8.473,1.272,11.996,3.63l40.312-23.274l-40.312-23.272c-3.523,2.359-7.675,3.63-11.996,3.63c-3.762,0-7.479-.998-10.752-2.89c-4.986-2.876-8.552-7.525-10.043-13.085c-1.49-5.56-.724-11.369,2.156-16.353c3.838-6.65,10.995-10.781,18.68-10.781c3.764,0,7.484,1,10.758,2.89c7.126,4.116,11.228,12.025,10.724,20.072l40.319,23.278v-46.552c-7.222-3.587-12.021-11.096-12.021-19.327c0-11.884,9.669,21.551-21.553,21.551c11.884,0,21.553-9.667,21.553-21.551c0,8.231-4.799,15.74-12.021,19.327v46.552l40.32-23.278c-.504-8.047,3.598-15.956,10.724-20.072c3.275-1.889,6.994-2.89,10.758-2.89c7.684,0,14.842,4.132,18.682,10.781c2.878,4.984,3.644,10.792,2.154,16.353c-1.49,5.56-5.057,10.209-10.043,13.088c-3.272,1.889-6.989,2.887-10.752,2.887c-4.32,0-8.472-1.272-11.998-3.63l-40.31,23.272L315.377,296.385z"/></svg>';
+
+/* ── State ── */
+var phase='gate'; // gate | envelope | transitioning | reading
+var musicPlaying=false;
+var audio=null;
+var data=null;
+
+/* ── Default data ── */
+function defaultData(){
+  return {
+    recipient:'王小明',
+    photos:[
+      {src:'',caption:'Summer 2023',ratio:'3/4'},
+      {src:'',caption:'Graduation Day',ratio:'16/10'},
+      {src:'',caption:'Goodbye',ratio:'2/3'}
+    ],
+    greeting:'Dear Class of 2026',
+    body:[
+      '那个迟到被抓的早晨、一起溜去小卖部的课间、考试前互相划重点的深夜——这些你以为早已忘记的瞬间，其实都悄悄藏在了记忆最柔软的地方。',
+      '谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。',
+      '谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。',
+      '谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。',
+      '谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。'
+    ],
+    signoff:'永远怀念的',
+    date:'2026.06',
+    bgm:''
+  };
+}
+
+/* ── DOM refs ── */
+var gate=document.getElementById('gate');
+var tokenInput=document.getElementById('token-input');
+var gateBtn=document.getElementById('gate-btn');
+var errMsg=document.getElementById('err-msg');
+var particles=document.getElementById('particles');
+var envelopeWrap=document.getElementById('envelope-wrap');
+var envelopeAnim=document.getElementById('envelope-anim');
+var envelope=document.getElementById('envelope');
+var envFlap=document.getElementById('env-flap');
+var tapHint=document.getElementById('tap-hint');
+var content=document.getElementById('content');
+var letter=document.getElementById('letter');
+var vinyl=document.getElementById('vinyl');
+var musicBtn=document.getElementById('music-btn');
+
+/* ── Simple Markdown renderer ── */
+function md(text){
+  if(!text)return'';
+  var h=text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/^\> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^---$/gm,'<hr>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>')
+    .replace(/!\[(.+?)\]\((.+?)\)/g,'<img src="$2" alt="$1">')
+    .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2">$1</a>')
+    .replace(/\n/g,'<br>');
+  // Clean up <br> inside block elements
+  h=h.replace(/<(h[1-3]|blockquote|hr|ul|li|img|a)([^>]*)><br>/g,'<$1$2>');
+  h=h.replace(/<\/(h[1-3]|blockquote|ul|li|a)><br>/g,'</$1>');
+  return h;
+}
+
+/* ── Particles ── */
+function createParticles(){
+  var frag=document.createDocumentFragment();
+  // Stars
+  for(var i=0;i<25;i++){
+    var size=2+Math.random()*4;
+    var el=document.createElement('div');
+    el.className='star';
+    var isGold=Math.random()>.3;
+    el.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+size+'px;height:'+size+'px;'
+      +'background:'+(isGold?'rgba(212,175,55,'+(0.6+Math.random()*.4)+')':'rgba(255,230,160,'+(0.5+Math.random()*.4)+')')
+      +';box-shadow:0 0 '+size*3+'px '+size*1.2+'px rgba(212,175,55,'+(0.4+Math.random()*.5)+')'
+      +';--dur:'+(3+Math.random()*6)+'s;--del:'+(Math.random()*8)+'s;--mo:'+(0.6+Math.random()*.4);
+    frag.appendChild(el);
+  }
+  // Dust
+  for(var i=0;i<35;i++){
+    var size=1+Math.random()*2.5;
+    var el=document.createElement('div');
+    el.className='dust';
+    var isGold=Math.random()>.4;
+    el.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+size+'px;height:'+size+'px;'
+      +'background:'+(isGold?'rgba(212,175,55,'+(0.3+Math.random()*.4)+')':'rgba(255,240,210,'+(0.3+Math.random()*.35)+')')
+      +';box-shadow:0 0 '+size*2+'px '+size*.8+'px rgba(255,240,210,'+(0.25+Math.random()*.25)+')'
+      +';--dur:'+(8+Math.random()*12)+'s;--del:'+(Math.random()*10)+'s;--mo:'+(0.4+Math.random()*.35)
+      +';--dx:'+(-60+Math.random()*120)+'px;--dy:'+(-80+Math.random()*40)+'px';
+    frag.appendChild(el);
+  }
+  particles.appendChild(frag);
+}
+
+/* ── Populate envelope ── */
+function populateEnvelope(){
+  document.getElementById('env-line1').textContent=data.recipient+'  敬启';
+  document.getElementById('env-line2').textContent='Class of 2026';
+}
+
+/* ── Setup photos ── */
+function setupPhotos(){
+  var configs=[
+    {top:'max(6dvh,30px)',left:'68%',width:'35%',rotate:11,z:10,delay:.9},
+    {top:'max(6dvh,30px)',left:'9%',width:'64%',rotate:-9,z:9,delay:1},
+    {top:'max(24dvh,120px)',left:'2%',width:'30%',rotate:-15,z:3,delay:1.1}
+  ];
+  for(var i=0;i<3;i++){
+    var photoData=data.photos[i];
+    var c=configs[i];
+    var el=document.getElementById('photo'+i);
+    el.style.top=c.top;
+    el.style.left=c.left;
+    el.style.width=c.width;
+    el.style.zIndex=c.z;
+    el.style.setProperty('--rot',c.rotate+'deg');
+    // fromCenter fly-out offset
+    var leftNum=parseFloat(c.left)/100;
+    var fx=(0.5-leftNum)*60;
+    var fy=Math.max(25-leftNum*20,10);
+    el.style.setProperty('--fx',fx+'vw');
+    el.style.setProperty('--fy',fy+'vh');
+    var inner=el.querySelector('.photo-inner');
+    inner.style.aspectRatio=photoData.ratio||'3/4';
+    var caption=el.querySelector('.photo-caption');
+    caption.textContent=photoData.caption||'';
+    if(photoData.src){
+      inner.innerHTML='<img src="'+photoData.src+'" alt="'+(photoData.caption||'')+'">';
+    }else{
+      inner.innerHTML='<span style="font-size:clamp(9px,2.5vw,11px);color:rgba(74,63,53,.35);font-family:Georgia,serif">'+(photoData.ratio||'')+'</span>';
+    }
+    // Store delay for animation
+    el._delay=c.delay;
+  }
+}
+
+/* ── Build letter content ── */
+function buildLetter(){
+  var hasMd=data.body.some(function(p){return /^[\s]*[#*>`\-]/.test(p)||/\*\*|__|\[.+\]/.test(p)});
+  var html='';
+  // Header ornament
+  html+='<div class="blur-in"><div class="ornament-wrap"><div class="ornament-line"></div>'+SVG_ORNAMENT+'<div class="ornament-line"></div></div></div>';
+  // Greeting
+  html+='<div class="blur-in greeting">'+data.greeting+'</div>';
+  // Body paragraphs
+  data.body.forEach(function(p,i){
+    if(hasMd){
+      html+='<div class="blur-in md-body" style="margin-bottom:clamp(8px,2vw,12px)">'+md(p)+'</div>';
+    }else{
+      html+='<div class="blur-in" style="margin-bottom:clamp(8px,2vw,12px)">'+p+'</div>';
+    }
+  });
+  // Signoff
+  html+='<div class="blur-in signoff"><div class="signoff-name">'+data.signoff+'</div>'
+    +'<div class="signoff-line"><div class="signoff-hr"></div><span class="signoff-date">'+data.date+'</span></div></div>';
+  // Music button
+  html+='<div id="music-btn" role="button" aria-label="Toggle music">'+SVG_PLAY+'</div>';
+  letter.innerHTML=html;
+  musicBtn=letter.querySelector('#music-btn');
+  if(data.bgm){
+    musicBtn.classList.add('visible');
+    musicBtn.addEventListener('click',toggleMusic);
+  }
+}
+
+/* ── Animate blur-in blocks ── */
+function animateBlurIn(){
+  var blocks=letter.querySelectorAll('.blur-in');
+  blocks.forEach(function(b,i){
+    setTimeout(function(){b.classList.add('show')},600+i*100);
+  });
+}
+
+/* ── Show photos ── */
+function showPhotos(){
+  for(var i=0;i<3;i++){
+    var el=document.getElementById('photo'+i);
+    (function(el,delay){
+      setTimeout(function(){el.classList.add('show')},delay*1000);
+    })(el,el._delay);
+  }
+}
+
+/* ── Music ── */
+function toggleMusic(e){
+  if(e)e.stopPropagation();
+  if(!audio)return;
+  if(musicPlaying){
+    audio.pause();
+  }else{
+    audio.play().catch(function(){});
+  }
+  musicPlaying=!musicPlaying;
+  updateMusicUI();
+}
+
+function updateMusicUI(){
+  vinyl.classList.toggle('playing',musicPlaying);
+  if(musicBtn){
+    musicBtn.classList.toggle('playing',musicPlaying);
+    // Update icon
+    var existing=musicBtn.querySelector('.music-pulse');
+    if(musicPlaying){
+      musicBtn.innerHTML=SVG_PAUSE+'<div class="music-pulse"></div>';
+    }else{
+      musicBtn.innerHTML=SVG_PLAY;
+    }
+  }
+}
+
+function startBGM(){
+  if(!data||!data.bgm)return;
+  audio=new Audio(data.bgm);
+  audio.loop=true;
+  audio.volume=.6;
+  audio.play().catch(function(){});
+  musicPlaying=true;
+  updateMusicUI();
+}
+
+/* ── Vinyl toggle ── */
+vinyl.addEventListener('click',function(){
+  if(!audio&&data&&data.bgm){
+    audio=new Audio(data.bgm);
+    audio.loop=true;
+    audio.volume=.6;
+  }
+  toggleMusic();
+});
+
+/* ── Open envelope ── */
+function openEnvelope(){
+  if(phase!=='envelope')return;
+  // Try fullscreen
+  try{
+    var el=document.documentElement;
+    if(el.requestFullscreen)el.requestFullscreen();
+    else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
+  }catch(e){}
+  phase='transitioning';
+  envFlap.classList.remove('idle');
+  envFlap.classList.add('open');
+  tapHint.style.opacity='0';
+  envelopeWrap.classList.add('disabled');
+  envelopeAnim.classList.remove('entering');
+  // Small delay to let float animation stop, then start transition
+  requestAnimationFrame(function(){envelopeAnim.classList.add('opened')});
+  // Start BGM
+  startBGM();
+  // After delay, show reading
+  setTimeout(function(){
+    phase='reading';
+    content.classList.add('visible');
+    letter.classList.add('show');
+    document.getElementById('env-deco').classList.add('show');
+    showPhotos();
+    animateBlurIn();
+  },2400);
+}
+
+envelope.addEventListener('click',openEnvelope);
+tapHint.addEventListener('click',openEnvelope);
+
+/* ── Enter app after gate ── */
+function enterApp(){
+  gate.classList.add('hidden');
+  data=data||defaultData();
+  populateEnvelope();
+  setupPhotos();
+  buildLetter();
+  phase='envelope';
+  envFlap.classList.add('idle');
+}
+
+/* ── Gate logic ── */
+function validate(){
+  var input=tokenInput.value.trim();
+  if(!input&&window.location.hash){
+    input=window.location.hash.slice(1);
+  }
+  if(!input){
+    errMsg.textContent='Please enter an access code.';
+    errMsg.classList.add('show');
+    return;
+  }
+  // Try loading token.js
+  var s=document.createElement('script');
+  s.onload=function(){
+    if(window.__GRAD_DATA__){
+      data=window.__GRAD_DATA__;
+      enterApp();
+    }else if(window.__GRAD_VALID__){
+      enterApp();
+    }else{
+      fail();
+    }
+  };
+  s.onerror=function(){fail()};
+  s.src='tokens/'+input+'.js';
+  document.head.appendChild(s);
+}
+
+function fail(){
+  errMsg.textContent='Invalid code. Please try again.';
+  errMsg.classList.add('show');
+  tokenInput.value='';
+  tokenInput.style.animation='none';
+  tokenInput.offsetHeight;
+  tokenInput.style.animation='shake .4s ease';
+}
+
+gateBtn.addEventListener('click',validate);
+tokenInput.addEventListener('keydown',function(e){if(e.key==='Enter')validate()});
+
+// Auto-check: if server already set __GRAD_VALID__ or __GRAD_DATA__ (from token.html redirect)
+if(window.__GRAD_DATA__){
+  data=window.__GRAD_DATA__;
+  enterApp();
+}else if(window.__GRAD_VALID__){
+  enterApp();
+}else if(window.location.hash&&window.location.hash.length>1){
+  tokenInput.value=window.location.hash.slice(1);
+  validate();
+}
+
+// Init particles
+createParticles();
+
+})();
+</script>
+</body>
+</html>
