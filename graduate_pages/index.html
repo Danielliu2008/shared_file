@@ -203,13 +203,7 @@ border-radius:50%;background:#1a1815;border:1px solid rgba(212,175,55,.2)}
 .vinyl-shine{position:absolute;inset:0;border-radius:50%;
 background:linear-gradient(135deg,rgba(255,255,255,.06),transparent 50%,rgba(255,255,255,.02));pointer-events:none}
 
-/* Envelope decoration (reading phase) */
-#env-deco{position:absolute;bottom:-7dvh;left:6%;height:31dvh;aspect-ratio:4/3;z-index:5;
-opacity:0;transform:rotate(-3deg);transition:opacity 1s 1s,transform 1s 1s;pointer-events:none}
-#env-deco.show{opacity:.9}
-.deco-lines{align-self:flex-end;width:55%;margin-bottom:clamp(12px,4vw,20px);display:flex;flex-direction:column;gap:clamp(10px,3vw,15px)}
-.deco-line{border-bottom:1px solid #666;height:20px;position:relative}
-.deco-line span{position:absolute;right:0;bottom:2px;font-size:8px;color:#666;transform:scale(.9)}
+
 
 /* Recipient area */
 .recipient{position:absolute;top:50%;right:32px;transform:translateY(-50%);display:flex;
@@ -290,15 +284,9 @@ justify-content:space-between;padding:clamp(12px,3.5vw,22px)">
     <!-- Letter -->
     <div id="letter"></div>
     <!-- Envelope decoration -->
-    <div id="env-deco">
-      <div class="airmail" style="position:absolute;inset:0;border-radius:2px;overflow:hidden">
-        <div style="position:absolute;inset:clamp(3px,1.2vw,6px);background:var(--paper2);display:flex;
-flex-direction:column;justify-content:space-between;padding:clamp(12px,4vw,20px)">
-          <div class="badge badge-lg">
-            <div class="badge-t">AVIONOM</div><div class="badge-m">AIR MAIL</div><div class="badge-b">PAR AVION</div>
-          </div>
+    
           <div class="deco-lines">
-            <div class="deco-line"><span>Primalac / Recipient</span></div>
+            <div class="deco-line"><span></span></div>
             <div class="deco-line"></div>
             <div class="deco-line"><span>Poštanski kod, mesto / Postal code, city</span></div>
             <div class="deco-line"><span>Država / Country</span></div>
@@ -434,9 +422,9 @@ function populateEnvelope(){
 /* ── Setup photos ── */
 function setupPhotos(){
   var configs=[
-    {top:'max(6dvh,30px)',left:'68%',width:'35%',rotate:11,z:10,delay:.9},
-    {top:'max(6dvh,30px)',left:'9%',width:'64%',rotate:-9,z:9,delay:1},
-    {top:'max(24dvh,120px)',left:'2%',width:'30%',rotate:-15,z:3,delay:1.1}
+    {top:'max(6dvh,30px)',left:'68%',width:'30%',rotate:11,z:10,delay:.9},
+    {top:'max(6dvh,30px)',left:'9%',width:'50%',rotate:-9,z:9,delay:1},
+    {top:'max(24dvh,120px)',left:'2%',width:'24%',rotate:-15,z:3,delay:1.1}
   ];
   for(var i=0;i<3;i++){
     var photoData=data.photos&&data.photos[i];
@@ -501,7 +489,7 @@ function buildLetter(){
 function animateBlurIn(){
   var blocks=letter.querySelectorAll('.blur-in');
   blocks.forEach(function(b,i){
-    setTimeout(function(){b.classList.add('show')},600+i*100);
+    setTimeout(function(){b.classList.add('show')},400+i*80);
   });
 }
 
@@ -586,10 +574,10 @@ function openEnvelope(){
     phase='reading';
     content.classList.add('visible');
     letter.classList.add('show');
-    document.getElementById('env-deco').classList.add('show');
+    // env-deco removed
     showPhotos();
     animateBlurIn();
-  },2400);
+  },1600);
 }
 
 envelope.addEventListener('click',openEnvelope);
