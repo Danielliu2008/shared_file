@@ -439,9 +439,10 @@ function setupPhotos(){
     {top:'max(24dvh,120px)',left:'2%',width:'30%',rotate:-15,z:3,delay:1.1}
   ];
   for(var i=0;i<3;i++){
-    var photoData=data.photos[i];
+    var photoData=data.photos&&data.photos[i];
     var c=configs[i];
     var el=document.getElementById('photo'+i);
+    if(!photoData){el.style.display='none';continue;}
     el.style.top=c.top;
     el.style.left=c.left;
     el.style.width=c.width;
