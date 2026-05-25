@@ -1,60 +1,15 @@
-// ============================================================
-// Graduation Letter Token Data
-// File: tokens/0fdd2bbda9dcecabb2d2d5ecf8ee87cb.js
-// Access: https://YOUR_DOMAIN/?t=0fdd2bbda9dcecabb2d2d5ecf8ee87cb
-// ============================================================
-// This file is loaded by index.html via sync XHR.
-// Response 200 = token valid, eval sets window.__GRAD_DATA__.
-// Response 404 = token invalid, user sees 404.html.
-// ============================================================
-//
-// DATA SPEC:
-//   recipient  : string   — 收件人姓名（信封显示 "XXX  敬启"）
-//   photos     : array[3] — 宝丽来照片
-//       .src    : string   — base64("data:image/jpeg;base64,...") 或 URL
-//       .caption: string   — 照片下方手写备注
-//       .ratio  : string   — 宽高比 "3/4" | "16/10" | "2/3"
-//   greeting   : string   — 称呼（如 "Dear Class of 2026"）
-//   body       : string[] — 信件正文段落数组（支持 Markdown 语法）
-//   signoff    : string   — 落款
-//   date       : string   — 日期显示
-//   bgm        : string   — BGM 音频 URL（可选，留空则不显示播放按钮）
-//
-// ============================================================
-
 window.__GRAD_DATA__ = {
-  recipient: "王小明",
-
+  recipient: "刘常浩",
   photos: [
-    {
-      src: "",
-      caption: "Summer 2023",
-      ratio: "3/4"
-    },
-    {
-      src: "",
-      caption: "Graduation Day",
-      ratio: "16/10"
-    },
-    {
-      src: "",
-      caption: "Goodbye",
-      ratio: "2/3"
-    }
+    { src: "https://cdn.jsdelivr.net/gh/Danielliu2008/shared_file/g2026/t3_2_3.jpg", caption: "二次元相识的哥们", ratio: "2/3" }
   ],
-
-  greeting: "Dear Class of 2026",
-
+  greeting: "常浩",
   body: [
-    "那个迟到被抓的早晨、一起溜去小卖部的课间、考试前互相划重点的深夜——这些你以为早已忘记的瞬间，其实都悄悄藏在了记忆最柔软的地方。",
-    "谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。",
-    "谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。",
-    "谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。",
-    "谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。"
+    "高中最早认识的哥们，你也是二次元吗？开始了我们三年的友情。",
+    "还记得说你像桃你生气的样子🍑，有点爱较真想着反驳我们的话的样子，不过看你穿一身尼龙是真的帅，CSGO和GTA5也玩的6。军迷加Steam高玩，跟你聊天总能学点奇奇怪怪的知识。",
+    "高中三年有你这个哥们，值了。高考加油，考上理想的大学 💪🎮"
   ],
-
-  signoff: "永远怀念的",
+  signoff: "你的兄弟",
   date: "2026.06",
-
   bgm: ""
 };

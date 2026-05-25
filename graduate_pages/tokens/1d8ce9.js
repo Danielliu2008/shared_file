@@ -1,60 +1,13 @@
-// ============================================================
-// Graduation Letter Token Data
-// File: tokens/b0e94144d7118618e93c009437b21697.js
-// Access: https://YOUR_DOMAIN/?t=b0e94144d7118618e93c009437b21697
-// ============================================================
-// This file is loaded by index.html via sync XHR.
-// Response 200 = token valid, eval sets window.__GRAD_DATA__.
-// Response 404 = token invalid, user sees 404.html.
-// ============================================================
-//
-// DATA SPEC:
-//   recipient  : string   — 收件人姓名（信封显示 "XXX  敬启"）
-//   photos     : array[3] — 宝丽来照片
-//       .src    : string   — base64("data:image/jpeg;base64,...") 或 URL
-//       .caption: string   — 照片下方手写备注
-//       .ratio  : string   — 宽高比 "3/4" | "16/10" | "2/3"
-//   greeting   : string   — 称呼（如 "Dear Class of 2026"）
-//   body       : string[] — 信件正文段落数组（支持 Markdown 语法）
-//   signoff    : string   — 落款
-//   date       : string   — 日期显示
-//   bgm        : string   — BGM 音频 URL（可选，留空则不显示播放按钮）
-//
-// ============================================================
-
 window.__GRAD_DATA__ = {
-  recipient: "王小明",
-
-  photos: [
-    {
-      src: "",
-      caption: "Summer 2023",
-      ratio: "3/4"
-    },
-    {
-      src: "",
-      caption: "Graduation Day",
-      ratio: "16/10"
-    },
-    {
-      src: "",
-      caption: "Goodbye",
-      ratio: "2/3"
-    }
-  ],
-
-  greeting: "Dear Class of 2026",
-
+  recipient: "谢老师",
+  photos: [],
+  greeting: "亲爱的谢老师",
   body: [
-    "那个迟到被抓的早晨、一起溜去小卖部的课间、考试前互相划重点的深夜——这些你以为早已忘记的瞬间，其实都悄悄藏在了记忆最柔软的地方。",
-    "谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。",
-    "谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。",
-    "谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。",
-    "谢谢你们，让这段旅程如此闪亮。愿你们前程似锦，万事胜意。"
+    "谢老师，三年数学，辛苦了！感谢您的耐心教导 📐",
+    "从函数到导数，从立体几何到解析几何，每一道难题背后都有您不厌其烦的讲解。虽然有时候真的很想掀桌子 hhh，但回过头来才发现，那些被您逼着做过的题，已经成了考场上最稳的底气。",
+    "三年过去了，谢谢您。祝您工作顺利，桃李满天下 🌟"
   ],
-
-  signoff: "永远怀念的",
+  signoff: "永远感谢您的学生",
   date: "2026.06",
-
   bgm: ""
 };
